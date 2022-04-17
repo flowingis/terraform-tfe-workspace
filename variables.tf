@@ -67,7 +67,7 @@ variable "structured_run_output_enabled" {
   default     = true
 }
 
-variable "ssk_key_id" {
+variable "ssh_key_id" {
   description = "The ID of an SSH key to assign to the workspace"
   type        = string
   default     = null
@@ -78,7 +78,7 @@ variable "terraform_version" {
   type        = string
 }
 
-variable "trigger_prefix" {
+variable "trigger_prefixes" {
   description = "List of repository-root-relative paths which describe all locations to be tracked for changes"
   type        = list(string)
   default     = []
@@ -93,7 +93,7 @@ variable "tag_names" {
 variable "working_directory" {
   description = "A relative path that Terraform will execute within"
   type        = string
-  default     = "./"
+  default     = null
 }
 
 variable "vcs_repository_identifier" {
@@ -117,5 +117,104 @@ variable "vcs_repository_ingress_submodules" {
 variable "oauth_client_id" {
   description = "ID of the OAuth client"
   type        = string
-  default     = null
+  default     = ""
+}
+
+variable "terraform_variables" {
+  description = <<EOF
+List of map of variables of 'Terraform' category used in the workspace
+
+Item syntax:
+{
+  key = "foo" [required]
+  value = "bar" [required]
+  description = "baz" [optional]
+}
+EOF
+
+  type    = list(any)
+  default = []
+}
+
+variable "terraform_hcl_variables" {
+  description = <<EOF
+List of map of variables in HCL format of 'Terraform' category used in the workspace
+
+Item syntax:
+{
+  key = "foo" [required]
+  value = "bar" [required]
+  description = "baz" [optional]
+}
+EOF
+
+  type    = list(any)
+  default = []
+}
+
+variable "terraform_sensitive_variables" {
+  description = <<EOF
+Map of sensitive variables of 'Terraform' category used in the workspace
+
+Item syntax:
+{
+  key = "foo" [required]
+  value = "bar" [required]
+  description = "baz" [optional]
+}
+EOF
+
+  type      = list(any)
+  default   = []
+  sensitive = true
+}
+
+variable "terraform_hcl_sensitive_variables" {
+  description = <<EOF
+Map of sensitive variables in HCL format of 'Terraform' category used in the workspace"
+
+Item syntax:
+{
+  key = "foo" [required]
+  value = "bar" [required]
+  description = "baz" [optional]
+}
+EOF
+
+  type      = list(any)
+  default   = []
+  sensitive = true
+}
+
+variable "environment_variables" {
+  description = <<EOF
+Map of variables of 'environment' category used in the workspace"
+
+Item syntax:
+{
+  key = "foo" [required]
+  value = "bar" [required]
+  description = "baz" [optional]
+}
+EOF
+
+  type    = list(any)
+  default = []
+}
+
+variable "environment_sensitive_variables" {
+  description = <<EOF
+Map of sensitive variables of 'environment' category used in the workspace"
+
+Item syntax:
+{
+  key = "foo" [required]
+  value = "bar" [required]
+  description = "baz" [optional]
+}
+EOF
+
+  type      = list(any)
+  default   = []
+  sensitive = true
 }
