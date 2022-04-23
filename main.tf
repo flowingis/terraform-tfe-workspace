@@ -1,76 +1,65 @@
-data "tfe_oauth_client" "this" {
-  count           = length(var.oauth_client_id) > 0 ? 1 : 0
-  oauth_client_id = var.oauth_client_id
-}
-
 locals {
-  terraform_variables = [for v in var.terraform_variables :
+  terraform_variables = { for k, v in var.terraform_variables : k =>
     {
-      key         = v.key
-      value       = v.value
+      value       = v
       category    = "terraform"
-      description = try(v.description, null)
+      description = lookup(var.variables_descriptions, k, null)
     }
-  ]
+  }
 
-  terraform_hcl_variables = [for v in var.terraform_hcl_variables :
+  terraform_hcl_variables = { for k, v in var.terraform_hcl_variables : k =>
     {
-      key         = v.key
-      value       = v.value
+      value       = v
       category    = "terraform"
       hcl         = true
-      description = try(v.description, null)
+      description = lookup(var.variables_descriptions, k, null)
     }
-  ]
+  }
 
-  terraform_sensitive_variables = [for v in var.terraform_sensitive_variables :
+  terraform_sensitive_variables = { for k, v in var.terraform_sensitive_variables : k =>
     {
-      key         = v.key
-      value       = v.value
+      value       = v
       category    = "terraform"
-      description = try(v.description, null)
+      description = lookup(var.variables_descriptions, k, null)
       sensitive   = true
     }
-  ]
+  }
 
-  terraform_hcl_sensitive_variables = [for v in var.terraform_hcl_sensitive_variables :
+  terraform_hcl_sensitive_variables = { for k, v in var.terraform_hcl_sensitive_variables : k =>
     {
-      key         = v.key
-      value       = v.value
+      value       = v
       category    = "terraform"
-      description = try(v.description, null)
+      description = lookup(var.variables_descriptions, k, null)
       hcl         = true
       sensitive   = true
     }
-  ]
+  }
 
-  environment_variables = [for v in var.environment_variables :
+  environment_variables = { for k, v in var.environment_variables : k =>
     {
-      key         = v.key
-      value       = v.value
+      value       = v
       category    = "env"
-      description = try(v.description, null)
+      description = lookup(var.variables_descriptions, k, null)
     }
-  ]
+  }
 
-  environment_sensitive_variables = [for v in var.environment_sensitive_variables :
+  environment_sensitive_variables = { for k, v in var.environment_sensitive_variables : k =>
     {
-      key         = v.key
-      value       = v.value
+      value       = v
       category    = "env"
-      description = try(v.description, null)
+      description = lookup(var.variables_descriptions, k, null)
       sensitive   = true
     }
-  ]
+  }
 
-  all_variables = flatten([
+  all_variables = merge(
     local.terraform_variables,
     local.terraform_hcl_variables,
     local.terraform_sensitive_variables,
     local.terraform_hcl_sensitive_variables,
     local.environment_variables,
     local.environment_sensitive_variables
-  ])
+  )
 }
 
 resource "tfe_workspace" "this" {
@@ -93,25 +82,25 @@ resource "tfe_workspace" "this" {
   working_directory             = var.working_directory
 
   dynamic "vcs_repo" {
-    for_each = length(var.vcs_repository_identifier) > 0 && can(data.tfe_oauth_client.this[0].oauth_token_id) ? [1] : []
+    for_each = length(var.vcs_repository_identifier) > 0 && length(var.oauth_token_id) > 0 ? [1] : []
 
     content {
       identifier         = var.vcs_repository_identifier
       branch             = var.vcs_repository_branch
       ingress_submodules = var.vcs_repository_ingress_submodules
-      oauth_token_id     = try(data.tfe_oauth_client.this[0].oauth_token_id, null)
+      oauth_token_id     = var.oauth_token_id
     }
   }
 }
 
 resource "tfe_variable" "this" {
-  count = length(local.all_variables)
+  for_each = local.all_variables
 
-  key          = lookup(local.all_variables[count.index], "key")
-  value        = lookup(local.all_variables[count.index], "value")
-  hcl          = try(lookup(local.all_variables[count.index], "hcl"), null)
-  category     = lookup(local.all_variables[count.index], "category")
-  description  = try(lookup(local.all_variables[count.index], "description"), null)
-  sensitive    = try(lookup(local.all_variables[count.index], "sensitive"), false)
+  key          = each.key
+  value        = each.value.value
+  hcl          = try(each.value.hcl, null)
+  category     = each.value.category
+  description  = try(each.value.description, null)
+  sensitive    = try(each.value.sensitive, false)
   workspace_id = tfe_workspace.this.id
 }
