@@ -32,8 +32,8 @@ variable "execution_mode" {
   default     = "remote"
 
   validation {
-    condition     = can(regex("agent|local|remote"), var.execution_mode)
-    error_message = "ERROR: Allowed values are \"remote\", \"local\" or \"agent\""
+    condition     = can(regex("agent|local|remote", var.execution_mode))
+    error_message = "ERROR: Allowed values are \"remote\", \"local\" or \"agent\"."
   }
 }
 
