@@ -9,7 +9,8 @@ locals {
 
   terraform_hcl_variables = { for k, v in var.terraform_hcl_variables : k =>
     {
-      value       = v
+      #NOTE: using @osterman trick https://github.com/hashicorp/terraform-provider-tfe/issues/188#issuecomment-700212045
+      value       = replace(jsonencode(v), "/(\".*?\"):/", "$1 = ")
       category    = "terraform"
       hcl         = true
       description = lookup(var.variables_descriptions, k, null)
@@ -27,7 +28,8 @@ locals {
 
   terraform_hcl_sensitive_variables = { for k, v in var.terraform_hcl_sensitive_variables : k =>
     {
-      value       = v
+      #NOTE: using @osterman trick https://github.com/hashicorp/terraform-provider-tfe/issues/188#issuecomment-700212045
+      value       = replace(jsonencode(v), "/(\".*?\"):/", "$1 = ")
       category    = "terraform"
       description = lookup(var.variables_descriptions, k, null)
       hcl         = true

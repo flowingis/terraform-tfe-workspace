@@ -130,12 +130,12 @@ variable "terraform_variables" {
   description = <<EOF
 (Optional) Map of variables of 'Terraform' category used in the workspace
 
-Item syntax:
-{
-  variable1_name = value1
-  variable2_name = value2
-  ...
-}
+  Item syntax:
+  {
+    variable1_name = value1
+    variable2_name = value2
+    ...
+  }
 EOF
 
   type    = map(any)
@@ -146,28 +146,27 @@ variable "terraform_hcl_variables" {
   description = <<EOF
 (Optional) Map of variables in HCL format of 'Terraform' category used in the workspace
 
-Item syntax:
-{
-  variable1_name = value1
-  variable2_name = value2
-  ...
-}
+  Item syntax:
+  {
+    variable1_name = value1
+    variable2_name = value2
+    ...
+  }
 
-NOTE: the values must be strings, use escapes or HEREDOC like this:
+NOTE: you can specifies values in HCL format directly, like this:
 
-{
-  variable_list = "[\"item1\",\"item2\"]"
+  {
+    variable_list = ["item1","item2"]
 
-  variable_map = <<EOT
-{
-  key1 = value1
-  key2 = value2
-}
-EOT
+    variable_map = {
+      key1 = value1
+      key2 = value2
+    }
+  }
 }
 EOF
 
-  type    = map(any)
+  type    = any
   default = {}
 }
 
@@ -191,28 +190,26 @@ variable "terraform_hcl_sensitive_variables" {
   description = <<EOF
 (Optional) Map of sensitive variables in HCL format of 'Terraform' category used in the workspace
 
-Item syntax:
-{
-  variable1_name = value1
-  variable2_name = value2
-  ...
-}
+  Item syntax:
+  {
+    variable1_name = value1
+    variable2_name = value2
+    ...
+  }
 
-NOTE: the values must be strings, use escapes or HEREDOC like this:
+NOTE: you can specifies values in HCL format directly, like this:
 
-{
-  variable_list = "[\"item1\",\"item2\"]"
+  {
+    variable_list = ["item1","item2"]
 
-  variable_map = <<EOT
-{
-  key1 = value1
-  key2 = value2
-}
-EOT
-}
+    variable_map = {
+      key1 = value1
+      key2 = value2
+    }
+  }
 EOF
 
-  type    = map(any)
+  type    = any
   default = {}
 }
 
@@ -220,12 +217,12 @@ variable "environment_variables" {
   description = <<EOF
 (Optional) Map of variables of 'environment' category used in the workspace
 
-Item syntax:
-{
-  variable1_name = value1
-  variable2_name = value2
-  ...
-}
+  Item syntax:
+  {
+    variable1_name = value1
+    variable2_name = value2
+    ...
+  }
 EOF
 
   type    = map(any)
@@ -236,12 +233,12 @@ variable "environment_sensitive_variables" {
   description = <<EOF
 (Optional) Map of sensitive variables of 'environment' category used in the workspace
 
-Item syntax:
-{
-  variable1_name = value1
-  variable2_name = value2
-  ...
-}
+  Item syntax:
+  {
+    variable1_name = value1
+    variable2_name = value2
+    ...
+  }
 EOF
 
   type    = map(any)
@@ -252,12 +249,12 @@ variable "variables_descriptions" {
   description = <<EOF
 (Optional) Map of descriptions applied to workspace variables
 
-Item syntax:
-{
-  variable1_name = "description"
-  variable2_name = "description"
-  ...
-}
+  Item syntax:
+  {
+    variable1_name = "description"
+    variable2_name = "description"
+    ...
+  }
 EOF
 
   type    = map(string)
