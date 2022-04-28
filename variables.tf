@@ -260,3 +260,9 @@ EOF
   type    = map(string)
   default = {}
 }
+
+variable "run_triggers" {
+  description = "List of source workspaces IDs that trigger runs in this workspace"
+  type        = list(string)
+  default     = []
+}

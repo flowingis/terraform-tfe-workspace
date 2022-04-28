@@ -106,3 +106,10 @@ resource "tfe_variable" "this" {
   sensitive    = try(each.value.sensitive, false)
   workspace_id = tfe_workspace.this.id
 }
+
+resource "tfe_run_trigger" "this" {
+  count = length(var.run_triggers)
+
+  workspace_id  = tfe_workspace.this.id
+  sourceable_id = var.run_triggers[count.index]
+}
