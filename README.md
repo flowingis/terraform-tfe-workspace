@@ -1,6 +1,100 @@
 # terraform-tfe-workspace
 Terraform module to provision and manage Terraform Cloud workspaces
 
+## Features
+
+- Definition of a Terraform Cloud Workspace with following available settings, including items in:
+  - General
+  - Notifications [*]
+  - Run Triggers
+  - Version Control
+- Variables
+
+:warning: For Notifications configuration, only "webhook" and "slack" types are supported at the moment
+
+## Usage
+
+### Simple workspace with local run mode
+```
+module "workspace_only_for_remote_state" {
+  source  = "flowingis/workspace/tfe"
+  version = "0.2.0"
+
+  name         = "my-workspace-name"
+  organization = "my-organization"
+  description  = "Simple workspace that only manages the remote state for some resource on AWS"
+
+  terraform_version = "1.1.9"
+  execution_mode    = "local"
+
+  terraform_variables = {
+      environment = "dev"
+      project     = "myproject"
+    }
+  )
+
+  variables_descriptions = merge(
+    {
+      environment = "The environment of the project"
+      region      = "The name of the project"
+    }
+  )
+
+  tag_names = [
+    "project:myproject",
+    "environment:dev",
+  ]
+}
+```
+
+### Advanced workspace with remote run mode
+```
+module "my_workspace" {
+  source  = "flowingis/workspace/tfe"
+  version = "0.2.0"
+
+  name         = "my-workspace-name"
+  organization = "my-organization"
+  description  = "Advanced workspace with remote run mode"
+
+  terraform_version = "1.1.9"
+
+  queue_all_runs            = false
+  working_directory         = "/my/sub/path"
+  vcs_repository_identifier = "my-github-org/my-repo"
+  vcs_repository_branch     = "main"
+
+  oauth_token_id = var.oauth_token_id #NOTE: sensitive value
+
+  terraform_variables = {
+      environment = "core"
+      project     = "core"
+      region      = "eu-west-1"
+    }
+  )
+
+  environment_sensitive_variables = {
+    AWS_ACCESS_KEY_ID     = var.access_key_id #NOTE: sensitive value
+    AWS_SECRET_ACCESS_KEY = var.secret_access_key #NOTE: sensitive value
+  }
+
+  variables_descriptions = {
+      environment           = "The environment of the project"
+      project               = "The name of the project"
+      region                = "The AWS region where shared resources are deployed"
+      AWS_ACCESS_KEY_ID     = "Access Key ID to access AWS Account"
+      AWS_SECRET_ACCESS_KEY = "Secret Access Key to access AWS Account"
+    }
+  )
+
+  tag_names = [
+    "project:core",
+    "environment:core",
+    "region:eu-west-1"
+  ]
+}
+```
+
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
