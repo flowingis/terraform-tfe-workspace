@@ -266,3 +266,86 @@ variable "run_triggers" {
   type        = list(string)
   default     = []
 }
+
+variable "notification_webhook_configuration" {
+  description = <<EOT
+(Optional) List of notification configuration of 'Webhook' type
+
+  Item syntax:
+  [
+    {
+      name = "webhook_1"
+      enabled = true
+      token = "mysupersecrettoken1"
+      url = "https://myendpoint1.domain.ext"
+      triggers = [
+        "created",
+        "planning",
+        "needs_attention",
+        "applying",
+        "completed",
+        "errored"
+      ]
+    },
+    {
+      name = "webhook_2"
+      enabled = false
+      token = "mysupersecrettoken2"
+      url = "https://myendpoint2.domain.ext"
+    },
+    {
+      ...
+    }
+  ]
+EOT
+
+  type = list(object({
+    name     = string,
+    enabled  = bool,
+    token    = string,
+    url      = string,
+    triggers = list(string) #Optional
+  }))
+
+  default = []
+}
+
+variable "notification_slack_configuration" {
+  description = <<EOT
+(Optional) List of notification configuration of 'Slack' type
+
+  Item syntax:
+  [
+    {
+      name = "webhook_1"
+      enabled = true
+      url = "https://hooks.slack.com/services/VeryLongHash1"
+      triggers = [
+        "created",
+        "planning",
+        "needs_attention",
+        "applying",
+        "completed",
+        "errored"
+      ]
+    },
+    {
+      name = "webhook_2"
+      enabled = false
+      url = "https://hooks.slack.com/services/VeryLongHash2"
+    },
+    {
+      ...
+    }
+  ]
+EOT
+
+  type = list(object({
+    name     = string,
+    enabled  = bool,
+    url      = string,
+    triggers = list(string) #Optional
+  }))
+
+  default = []
+}
