@@ -113,3 +113,26 @@ resource "tfe_run_trigger" "this" {
   workspace_id  = tfe_workspace.this.id
   sourceable_id = var.run_triggers[count.index]
 }
+
+resource "tfe_notification_configuration" "webhook" {
+  count = length(var.notification_webhook_configuration)
+
+  name             = lookup(var.notification_webhook_configuration[count.index], "name")
+  destination_type = "generic"
+  enabled          = lookup(var.notification_webhook_configuration[count.index], "enabled", false)
+  token            = lookup(var.notification_webhook_configuration[count.index], "token", null)
+  triggers         = [for trigger in lookup(var.notification_webhook_configuration[count.index], "triggers", []) : "run:${trigger}"]
+  url              = lookup(var.notification_webhook_configuration[count.index], "url")
+  workspace_id     = tfe_workspace.this.id
+}
+
+resource "tfe_notification_configuration" "slack" {
+  count = length(var.notification_slack_configuration)
+
+  name             = lookup(var.notification_slack_configuration[count.index], "name")
+  destination_type = "slack"
+  enabled          = lookup(var.notification_slack_configuration[count.index], "enabled", false)
+  triggers         = [for trigger in lookup(var.notification_slack_configuration[count.index], "triggers", []) : "run:${trigger}"]
+  url              = lookup(var.notification_slack_configuration[count.index], "url")
+  workspace_id     = tfe_workspace.this.id
+}
