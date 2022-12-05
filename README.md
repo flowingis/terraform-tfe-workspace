@@ -10,7 +10,7 @@ Terraform module to provision and manage Terraform Cloud workspaces
   - Version Control
 - Variables
 
-:warning: For Notifications configuration, only "webhook" and "slack" types are supported at the moment
+:warning: For Notifications configuration, only "webhook", "slack" and "microsoft-teams" types are supported at the moment
 
 ## Usage
 
@@ -18,7 +18,7 @@ Terraform module to provision and manage Terraform Cloud workspaces
 ```
 module "workspace_only_for_remote_state" {
   source  = "flowingis/workspace/tfe"
-  version = "0.2.0"
+  version = "0.3.0"
 
   name         = "my-workspace-name"
   organization = "my-organization"
@@ -51,7 +51,7 @@ module "workspace_only_for_remote_state" {
 ```
 module "my_workspace" {
   source  = "flowingis/workspace/tfe"
-  version = "0.2.0"
+  version = "0.3.0"
 
   name         = "my-workspace-name"
   organization = "my-organization"
@@ -100,14 +100,14 @@ module "my_workspace" {
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.14.0 |
-| <a name="requirement_tfe"></a> [tfe](#requirement\_tfe) | ~> 0.31.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
+| <a name="requirement_tfe"></a> [tfe](#requirement\_tfe) | >= 0.39.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_tfe"></a> [tfe](#provider\_tfe) | ~> 0.31.0 |
+| <a name="provider_tfe"></a> [tfe](#provider\_tfe) | >= 0.39.0 |
 
 ## Modules
 
@@ -117,6 +117,7 @@ No modules.
 
 | Name | Type |
 |------|------|
+| [tfe_notification_configuration.microsoft_teams](https://registry.terraform.io/providers/hashicorp/tfe/latest/docs/resources/notification_configuration) | resource |
 | [tfe_notification_configuration.slack](https://registry.terraform.io/providers/hashicorp/tfe/latest/docs/resources/notification_configuration) | resource |
 | [tfe_notification_configuration.webhook](https://registry.terraform.io/providers/hashicorp/tfe/latest/docs/resources/notification_configuration) | resource |
 | [tfe_run_trigger.this](https://registry.terraform.io/providers/hashicorp/tfe/latest/docs/resources/run_trigger) | resource |
@@ -128,14 +129,17 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_allow_destroy_plan"></a> [allow\_destroy\_plan](#input\_allow\_destroy\_plan) | (Optional) Whether destroy plans can be queued on the workspace | `bool` | `false` | no |
+| <a name="input_assessments_enabled"></a> [assessments\_enabled](#input\_assessments\_enabled) | (Optional) Whether to regularly run health assessments such as drift detection on the workspace | `bool` | `false` | no |
 | <a name="input_auto_apply"></a> [auto\_apply](#input\_auto\_apply) | (Optional) Whether to automatically apply changes when a Terraform plan is successful | `bool` | `false` | no |
 | <a name="input_description"></a> [description](#input\_description) | (Optional) A description for the workspace | `string` | `""` | no |
 | <a name="input_environment_sensitive_variables"></a> [environment\_sensitive\_variables](#input\_environment\_sensitive\_variables) | (Optional) Map of sensitive variables of 'environment' category used in the workspace<br><br>  Item syntax:<br>  {<br>    variable1\_name = value1<br>    variable2\_name = value2<br>    ...<br>  } | `map(any)` | `{}` | no |
 | <a name="input_environment_variables"></a> [environment\_variables](#input\_environment\_variables) | (Optional) Map of variables of 'environment' category used in the workspace<br><br>  Item syntax:<br>  {<br>    variable1\_name = value1<br>    variable2\_name = value2<br>    ...<br>  } | `map(any)` | `{}` | no |
 | <a name="input_execution_mode"></a> [execution\_mode](#input\_execution\_mode) | (Optional) Which execution mode to use | `string` | `"remote"` | no |
 | <a name="input_file_triggers_enabled"></a> [file\_triggers\_enabled](#input\_file\_triggers\_enabled) | (Optional) Whether to filter runs based on the changed files in a VCS push | `bool` | `true` | no |
+| <a name="input_force_delete"></a> [force\_delete](#input\_force\_delete) | (Optional) If this attribute is present on a workspace that is being deleted through the provider, it will use the existing force delete API. If this attribute is not present or false it will safe delete the workspace | `bool` | `false` | no |
 | <a name="input_global_remote_state"></a> [global\_remote\_state](#input\_global\_remote\_state) | (Optional) Whether the workspace allows all workspaces in the organization to access its state data during runs | `bool` | `false` | no |
 | <a name="input_name"></a> [name](#input\_name) | (Required) Name of the workspace | `string` | n/a | yes |
+| <a name="input_notification_microsoft_teams_configuration"></a> [notification\_microsoft\_teams\_configuration](#input\_notification\_microsoft\_teams\_configuration) | (Optional) List of notification configuration of 'Microsoft Teams' type<br><br>  Item syntax:<br>  [<br>    {<br>      name = "webhook\_1"<br>      enabled = true<br>      url = "https://ms1234567890abcde.webhook.office.com"<br>      triggers = [<br>        "created",<br>        "planning",<br>        "needs\_attention",<br>        "applying",<br>        "completed",<br>        "errored"<br>      ]<br>    },<br>    {<br>      name = "webhook\_2"<br>      enabled = false<br>      url = "https://ms0987654321edcba.webhook.office.com"<br>    },<br>    {<br>      ...<br>    }<br>  ] | <pre>list(object({<br>    name     = string,<br>    enabled  = bool,<br>    url      = string,<br>    triggers = list(string) #Optional<br>  }))</pre> | `[]` | no |
 | <a name="input_notification_slack_configuration"></a> [notification\_slack\_configuration](#input\_notification\_slack\_configuration) | (Optional) List of notification configuration of 'Slack' type<br><br>  Item syntax:<br>  [<br>    {<br>      name = "webhook\_1"<br>      enabled = true<br>      url = "https://hooks.slack.com/services/VeryLongHash1"<br>      triggers = [<br>        "created",<br>        "planning",<br>        "needs\_attention",<br>        "applying",<br>        "completed",<br>        "errored"<br>      ]<br>    },<br>    {<br>      name = "webhook\_2"<br>      enabled = false<br>      url = "https://hooks.slack.com/services/VeryLongHash2"<br>    },<br>    {<br>      ...<br>    }<br>  ] | <pre>list(object({<br>    name     = string,<br>    enabled  = bool,<br>    url      = string,<br>    triggers = list(string) #Optional<br>  }))</pre> | `[]` | no |
 | <a name="input_notification_webhook_configuration"></a> [notification\_webhook\_configuration](#input\_notification\_webhook\_configuration) | (Optional) List of notification configuration of 'Webhook' type<br><br>  Item syntax:<br>  [<br>    {<br>      name = "webhook\_1"<br>      enabled = true<br>      token = "mysupersecrettoken1"<br>      url = "https://myendpoint1.domain.ext"<br>      triggers = [<br>        "created",<br>        "planning",<br>        "needs\_attention",<br>        "applying",<br>        "completed",<br>        "errored"<br>      ]<br>    },<br>    {<br>      name = "webhook\_2"<br>      enabled = false<br>      token = "mysupersecrettoken2"<br>      url = "https://myendpoint2.domain.ext"<br>    },<br>    {<br>      ...<br>    }<br>  ] | <pre>list(object({<br>    name     = string,<br>    enabled  = bool,<br>    token    = string,<br>    url      = string,<br>    triggers = list(string) #Optional<br>  }))</pre> | `[]` | no |
 | <a name="input_oauth_token_id"></a> [oauth\_token\_id](#input\_oauth\_token\_id) | (Optional) The token ID of the VCS connection to use | `string` | `""` | no |
@@ -152,11 +156,13 @@ No modules.
 | <a name="input_terraform_sensitive_variables"></a> [terraform\_sensitive\_variables](#input\_terraform\_sensitive\_variables) | (Optional) Map of sensitive variables of 'Terraform' category used in the workspace<br><br>Item syntax:<br>{<br>  variable1\_name = value1<br>  variable2\_name = value2<br>  ...<br>} | `map(any)` | `{}` | no |
 | <a name="input_terraform_variables"></a> [terraform\_variables](#input\_terraform\_variables) | (Optional) Map of variables of 'Terraform' category used in the workspace<br><br>  Item syntax:<br>  {<br>    variable1\_name = value1<br>    variable2\_name = value2<br>    ...<br>  } | `map(any)` | `{}` | no |
 | <a name="input_terraform_version"></a> [terraform\_version](#input\_terraform\_version) | (Required) The version of Terraform to use for this workspace | `string` | n/a | yes |
-| <a name="input_trigger_prefixes"></a> [trigger\_prefixes](#input\_trigger\_prefixes) | (Optional) List of repository-root-relative paths which describe all locations to be tracked for changes | `list(string)` | `[]` | no |
+| <a name="input_trigger_patterns"></a> [trigger\_patterns](#input\_trigger\_patterns) | (Optional) List of glob patterns that describe the files Terraform Cloud monitors for changes. Trigger patterns are always appended to the root directory of the repository. Mutually exclusive with trigger-prefixes. Only available for Terraform Cloud | `list(string)` | `null` | no |
+| <a name="input_trigger_prefixes"></a> [trigger\_prefixes](#input\_trigger\_prefixes) | (Optional) List of repository-root-relative paths which describe all locations to be tracked for changes | `list(string)` | `null` | no |
 | <a name="input_variables_descriptions"></a> [variables\_descriptions](#input\_variables\_descriptions) | (Optional) Map of descriptions applied to workspace variables<br><br>  Item syntax:<br>  {<br>    variable1\_name = "description"<br>    variable2\_name = "description"<br>    ...<br>  } | `map(string)` | `{}` | no |
 | <a name="input_vcs_repository_branch"></a> [vcs\_repository\_branch](#input\_vcs\_repository\_branch) | (Optional) The repository branch that Terraform will execute from | `string` | `""` | no |
 | <a name="input_vcs_repository_identifier"></a> [vcs\_repository\_identifier](#input\_vcs\_repository\_identifier) | (Optional) A reference to your VCS repository in the format <organization>/<repository> where <organization> and <repository> refer to the organization and repository in your VCS provider. The format for Azure DevOps is //\_git/ | `string` | `""` | no |
 | <a name="input_vcs_repository_ingress_submodules"></a> [vcs\_repository\_ingress\_submodules](#input\_vcs\_repository\_ingress\_submodules) | (Optional) Whether submodules should be fetched when cloning the VCS repository | `bool` | `false` | no |
+| <a name="input_vcs_repository_tags_regex"></a> [vcs\_repository\_tags\_regex](#input\_vcs\_repository\_tags\_regex) | (Optional) (Optional) A regular expression used to trigger a Workspace run for matching Git tags. This option conflicts with trigger\_patterns and trigger\_prefixes. Should only set this value if the former is not being used | `string` | `null` | no |
 | <a name="input_working_directory"></a> [working\_directory](#input\_working\_directory) | (Optional) A relative path that Terraform will execute within | `string` | `null` | no |
 
 ## Outputs
