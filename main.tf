@@ -71,6 +71,7 @@ resource "tfe_workspace" "this" {
   allow_destroy_plan            = var.allow_destroy_plan
   auto_apply                    = var.auto_apply
   execution_mode                = var.execution_mode
+  assessments_enabled           = var.assessments_enabled
   file_triggers_enabled         = var.file_triggers_enabled
   global_remote_state           = var.global_remote_state
   remote_state_consumer_ids     = var.remote_state_consumer_ids
@@ -80,8 +81,10 @@ resource "tfe_workspace" "this" {
   ssh_key_id                    = var.ssh_key_id
   terraform_version             = var.terraform_version
   trigger_prefixes              = var.trigger_prefixes
+  trigger_patterns              = var.trigger_patterns
   tag_names                     = var.tag_names
   working_directory             = var.working_directory
+  force_delete                  = var.force_delete
 
   dynamic "vcs_repo" {
     for_each = length(var.vcs_repository_identifier) > 0 && length(var.oauth_token_id) > 0 ? [1] : []
@@ -91,6 +94,7 @@ resource "tfe_workspace" "this" {
       branch             = var.vcs_repository_branch
       ingress_submodules = var.vcs_repository_ingress_submodules
       oauth_token_id     = var.oauth_token_id
+      tags_regex         = var.vcs_repository_tags_regex
     }
   }
 }
@@ -134,5 +138,16 @@ resource "tfe_notification_configuration" "slack" {
   enabled          = lookup(var.notification_slack_configuration[count.index], "enabled", false)
   triggers         = [for trigger in lookup(var.notification_slack_configuration[count.index], "triggers", []) : "run:${trigger}"]
   url              = lookup(var.notification_slack_configuration[count.index], "url")
+  workspace_id     = tfe_workspace.this.id
+}
+
+resource "tfe_notification_configuration" "microsoft_teams" {
+  count = length(var.notification_microsoft_teams_configuration)
+
+  name             = lookup(var.notification_microsoft_teams_configuration[count.index], "name")
+  destination_type = "microsoft-teams"
+  enabled          = lookup(var.notification_microsoft_teams_configuration[count.index], "enabled", false)
+  triggers         = [for trigger in lookup(var.notification_microsoft_teams_configuration[count.index], "triggers", []) : "run:${trigger}"]
+  url              = lookup(var.notification_microsoft_teams_configuration[count.index], "url")
   workspace_id     = tfe_workspace.this.id
 }

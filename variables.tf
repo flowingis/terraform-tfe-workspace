@@ -37,6 +37,12 @@ variable "execution_mode" {
   }
 }
 
+variable "assessments_enabled" {
+  description = "(Optional) Whether to regularly run health assessments such as drift detection on the workspace"
+  type        = bool
+  default     = false
+}
+
 variable "file_triggers_enabled" {
   description = "(Optional) Whether to filter runs based on the changed files in a VCS push"
   type        = bool
@@ -87,7 +93,13 @@ variable "terraform_version" {
 variable "trigger_prefixes" {
   description = "(Optional) List of repository-root-relative paths which describe all locations to be tracked for changes"
   type        = list(string)
-  default     = []
+  default     = null
+}
+
+variable "trigger_patterns" {
+  description = "(Optional) List of glob patterns that describe the files Terraform Cloud monitors for changes. Trigger patterns are always appended to the root directory of the repository. Mutually exclusive with trigger-prefixes. Only available for Terraform Cloud"
+  type        = list(string)
+  default     = null
 }
 
 variable "tag_names" {
@@ -100,6 +112,12 @@ variable "working_directory" {
   description = "(Optional) A relative path that Terraform will execute within"
   type        = string
   default     = null
+}
+
+variable "force_delete" {
+  description = "(Optional) If this attribute is present on a workspace that is being deleted through the provider, it will use the existing force delete API. If this attribute is not present or false it will safe delete the workspace"
+  type        = bool
+  default     = false
 }
 
 variable "vcs_repository_identifier" {
@@ -124,6 +142,12 @@ variable "oauth_token_id" {
   description = "(Optional) The token ID of the VCS connection to use"
   type        = string
   default     = ""
+}
+
+variable "vcs_repository_tags_regex" {
+  description = "(Optional) (Optional) A regular expression used to trigger a Workspace run for matching Git tags. This option conflicts with trigger_patterns and trigger_prefixes. Should only set this value if the former is not being used"
+  type        = string
+  default     = null
 }
 
 variable "terraform_variables" {
@@ -333,6 +357,46 @@ variable "notification_slack_configuration" {
       name = "webhook_2"
       enabled = false
       url = "https://hooks.slack.com/services/VeryLongHash2"
+    },
+    {
+      ...
+    }
+  ]
+EOT
+
+  type = list(object({
+    name     = string,
+    enabled  = bool,
+    url      = string,
+    triggers = list(string) #Optional
+  }))
+
+  default = []
+}
+
+variable "notification_microsoft_teams_configuration" {
+  description = <<EOT
+(Optional) List of notification configuration of 'Microsoft Teams' type
+
+  Item syntax:
+  [
+    {
+      name = "webhook_1"
+      enabled = true
+      url = "https://ms1234567890abcde.webhook.office.com"
+      triggers = [
+        "created",
+        "planning",
+        "needs_attention",
+        "applying",
+        "completed",
+        "errored"
+      ]
+    },
+    {
+      name = "webhook_2"
+      enabled = false
+      url = "https://ms0987654321edcba.webhook.office.com"
     },
     {
       ...
