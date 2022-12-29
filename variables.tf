@@ -413,3 +413,9 @@ EOT
 
   default = []
 }
+
+variable "variable_set_ids" {
+  description = "List of variable set ids applied to this workspace"
+  type        = list(string)
+  default     = []
+}

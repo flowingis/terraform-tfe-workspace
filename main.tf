@@ -151,3 +151,10 @@ resource "tfe_notification_configuration" "microsoft_teams" {
   url              = lookup(var.notification_microsoft_teams_configuration[count.index], "url")
   workspace_id     = tfe_workspace.this.id
 }
+
+resource "tfe_workspace_variable_set" "this" {
+  for_each = toset(var.variable_set_ids)
+
+  variable_set_id = each.key
+  workspace_id    = tfe_workspace.this.id
+}
