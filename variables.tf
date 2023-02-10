@@ -415,7 +415,13 @@ EOT
 }
 
 variable "variable_set_ids" {
-  description = "List of variable set ids applied to this workspace"
+  description = "(Optional) List of variable set ids applied to this workspace"
   type        = list(string)
   default     = []
+}
+
+variable "project_id" {
+  description = "(Optional) ID of the project where the workspace should be created"
+  type        = string
+  default     = ""
 }

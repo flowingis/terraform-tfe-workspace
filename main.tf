@@ -75,6 +75,7 @@ resource "tfe_workspace" "this" {
   file_triggers_enabled         = var.file_triggers_enabled
   global_remote_state           = var.global_remote_state
   remote_state_consumer_ids     = var.remote_state_consumer_ids
+  project_id                    = var.project_id
   queue_all_runs                = var.queue_all_runs
   speculative_enabled           = var.speculative_enabled
   structured_run_output_enabled = var.structured_run_output_enabled

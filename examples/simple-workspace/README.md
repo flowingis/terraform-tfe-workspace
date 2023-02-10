@@ -26,8 +26,8 @@ for further information.
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.1.0 |
-| <a name="requirement_tfe"></a> [tfe](#requirement\_tfe) | ~> 0.39.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.3.0 |
+| <a name="requirement_tfe"></a> [tfe](#requirement\_tfe) | ~> 0.40.0 |
 
 ## Providers
 
