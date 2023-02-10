@@ -11,7 +11,9 @@ Terraform module to provision and manage Terraform Cloud workspaces
 - Variables
 - Variable Set assignments
 
-:warning: For Notifications configuration, only "webhook", "slack" and "microsoft-teams" types are supported at the moment
+> **Warning**
+> 
+> For Notifications configuration, only "webhook", "slack" and "microsoft-teams" types are supported at the moment
 
 ## Usage
 
@@ -150,7 +152,7 @@ No modules.
 | <a name="input_notification_webhook_configuration"></a> [notification\_webhook\_configuration](#input\_notification\_webhook\_configuration) | (Optional) List of notification configuration of 'Webhook' type<br><br>  Item syntax:<br>  [<br>    {<br>      name = "webhook\_1"<br>      enabled = true<br>      token = "mysupersecrettoken1"<br>      url = "https://myendpoint1.domain.ext"<br>      triggers = [<br>        "created",<br>        "planning",<br>        "needs\_attention",<br>        "applying",<br>        "completed",<br>        "errored"<br>      ]<br>    },<br>    {<br>      name = "webhook\_2"<br>      enabled = false<br>      token = "mysupersecrettoken2"<br>      url = "https://myendpoint2.domain.ext"<br>    },<br>    {<br>      ...<br>    }<br>  ] | <pre>list(object({<br>    name     = string,<br>    enabled  = bool,<br>    token    = string,<br>    url      = string,<br>    triggers = list(string) #Optional<br>  }))</pre> | `[]` | no |
 | <a name="input_oauth_token_id"></a> [oauth\_token\_id](#input\_oauth\_token\_id) | (Optional) The token ID of the VCS connection to use | `string` | `""` | no |
 | <a name="input_organization"></a> [organization](#input\_organization) | (Required) Name of the organization | `string` | n/a | yes |
-| <a name="input_project_id"></a> [project\_id](#input\_project\_id) | ID of the project where the workspace should be created | `string` | `""` | no |
+| <a name="input_project_id"></a> [project\_id](#input\_project\_id) | (Optional) ID of the project where the workspace should be created | `string` | `""` | no |
 | <a name="input_queue_all_runs"></a> [queue\_all\_runs](#input\_queue\_all\_runs) | (Optional) Whether the workspace should start automatically performing runs immediately after its creation | `bool` | `true` | no |
 | <a name="input_remote_state_consumer_ids"></a> [remote\_state\_consumer\_ids](#input\_remote\_state\_consumer\_ids) | (Optional) The set of workspace IDs set as explicit remote state consumers for the given workspace | `list(string)` | `[]` | no |
 | <a name="input_run_triggers"></a> [run\_triggers](#input\_run\_triggers) | List of source workspaces IDs that trigger runs in this workspace | `list(string)` | `[]` | no |
@@ -165,7 +167,7 @@ No modules.
 | <a name="input_terraform_version"></a> [terraform\_version](#input\_terraform\_version) | (Required) The version of Terraform to use for this workspace | `string` | n/a | yes |
 | <a name="input_trigger_patterns"></a> [trigger\_patterns](#input\_trigger\_patterns) | (Optional) List of glob patterns that describe the files Terraform Cloud monitors for changes. Trigger patterns are always appended to the root directory of the repository. Mutually exclusive with trigger-prefixes. Only available for Terraform Cloud | `list(string)` | `null` | no |
 | <a name="input_trigger_prefixes"></a> [trigger\_prefixes](#input\_trigger\_prefixes) | (Optional) List of repository-root-relative paths which describe all locations to be tracked for changes | `list(string)` | `null` | no |
-| <a name="input_variable_set_ids"></a> [variable\_set\_ids](#input\_variable\_set\_ids) | List of variable set ids applied to this workspace | `list(string)` | `[]` | no |
+| <a name="input_variable_set_ids"></a> [variable\_set\_ids](#input\_variable\_set\_ids) | (Optional) List of variable set ids applied to this workspace | `list(string)` | `[]` | no |
 | <a name="input_variables_descriptions"></a> [variables\_descriptions](#input\_variables\_descriptions) | (Optional) Map of descriptions applied to workspace variables<br><br>  Item syntax:<br>  {<br>    variable1\_name = "description"<br>    variable2\_name = "description"<br>    ...<br>  } | `map(string)` | `{}` | no |
 | <a name="input_vcs_repository_branch"></a> [vcs\_repository\_branch](#input\_vcs\_repository\_branch) | (Optional) The repository branch that Terraform will execute from | `string` | `""` | no |
 | <a name="input_vcs_repository_identifier"></a> [vcs\_repository\_identifier](#input\_vcs\_repository\_identifier) | (Optional) A reference to your VCS repository in the format <organization>/<repository> where <organization> and <repository> refer to the organization and repository in your VCS provider. The format for Azure DevOps is //\_git/ | `string` | `""` | no |
