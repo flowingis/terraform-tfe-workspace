@@ -419,3 +419,9 @@ variable "variable_set_ids" {
   type        = list(string)
   default     = []
 }
+
+variable "project_id" {
+  description = "ID of the project where the workspace should be created"
+  type        = string
+  default     = ""
+}

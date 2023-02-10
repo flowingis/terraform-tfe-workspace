@@ -1,10 +1,10 @@
 terraform {
-  required_version = "~> 1.1.0"
+  required_version = "~> 1.3.0"
 
   required_providers {
     tfe = {
       source  = "hashicorp/tfe"
-      version = "~> 0.39.0"
+      version = "~> 0.40.0"
     }
   }
 }
@@ -13,13 +13,26 @@ provider "tfe" {
   token = var.tfc_token
 }
 
+# Use existing organization
+data "tfe_organization" "myorg" {
+  name = "myorg"
+}
+
+# Use a dedicated project for this workspace
+resource "tfe_project" "myproject" {
+  organization = data.tfe_organization.myorg.name
+  name         = "myproject"
+}
+
 module "advanced_workspace" {
   source = "../../"
 
   name              = "advanced-workspace"
-  organization      = "myorg"
+  organization      = data.tfe_organization.myorg.name
   description       = "An advanced Terraform Cloud/Enterprise workspace"
-  terraform_version = "1.1.9"
+  terraform_version = "1.3.7"
+
+  project_id = tfe_project.myproject.id
 
   terraform_variables = {
     string_variable = "stringvalue"

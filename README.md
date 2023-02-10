@@ -19,13 +19,13 @@ Terraform module to provision and manage Terraform Cloud workspaces
 ```
 module "workspace_only_for_remote_state" {
   source  = "flowingis/workspace/tfe"
-  version = "0.3.0"
+  version = "0.5.0"
 
   name         = "my-workspace-name"
   organization = "my-organization"
   description  = "Simple workspace that only manages the remote state for some resource on AWS"
 
-  terraform_version = "1.1.9"
+  terraform_version = "1.3.7"
   execution_mode    = "local"
 
   terraform_variables = {
@@ -52,13 +52,13 @@ module "workspace_only_for_remote_state" {
 ```
 module "my_workspace" {
   source  = "flowingis/workspace/tfe"
-  version = "0.3.0"
+  version = "0.5.0"
 
   name         = "my-workspace-name"
   organization = "my-organization"
   description  = "Advanced workspace with remote run mode"
 
-  terraform_version = "1.1.9"
+  terraform_version = "1.3.7"
 
   queue_all_runs            = false
   working_directory         = "/my/sub/path"
@@ -106,13 +106,13 @@ It is possible to integrate this module with [tfe-variable-set module](https://r
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0 |
-| <a name="requirement_tfe"></a> [tfe](#requirement\_tfe) | >= 0.39.0 |
+| <a name="requirement_tfe"></a> [tfe](#requirement\_tfe) | >= 0.40.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_tfe"></a> [tfe](#provider\_tfe) | >= 0.39.0 |
+| <a name="provider_tfe"></a> [tfe](#provider\_tfe) | >= 0.40.0 |
 
 ## Modules
 
@@ -150,6 +150,7 @@ No modules.
 | <a name="input_notification_webhook_configuration"></a> [notification\_webhook\_configuration](#input\_notification\_webhook\_configuration) | (Optional) List of notification configuration of 'Webhook' type<br><br>  Item syntax:<br>  [<br>    {<br>      name = "webhook\_1"<br>      enabled = true<br>      token = "mysupersecrettoken1"<br>      url = "https://myendpoint1.domain.ext"<br>      triggers = [<br>        "created",<br>        "planning",<br>        "needs\_attention",<br>        "applying",<br>        "completed",<br>        "errored"<br>      ]<br>    },<br>    {<br>      name = "webhook\_2"<br>      enabled = false<br>      token = "mysupersecrettoken2"<br>      url = "https://myendpoint2.domain.ext"<br>    },<br>    {<br>      ...<br>    }<br>  ] | <pre>list(object({<br>    name     = string,<br>    enabled  = bool,<br>    token    = string,<br>    url      = string,<br>    triggers = list(string) #Optional<br>  }))</pre> | `[]` | no |
 | <a name="input_oauth_token_id"></a> [oauth\_token\_id](#input\_oauth\_token\_id) | (Optional) The token ID of the VCS connection to use | `string` | `""` | no |
 | <a name="input_organization"></a> [organization](#input\_organization) | (Required) Name of the organization | `string` | n/a | yes |
+| <a name="input_project_id"></a> [project\_id](#input\_project\_id) | ID of the project where the workspace should be created | `string` | `""` | no |
 | <a name="input_queue_all_runs"></a> [queue\_all\_runs](#input\_queue\_all\_runs) | (Optional) Whether the workspace should start automatically performing runs immediately after its creation | `bool` | `true` | no |
 | <a name="input_remote_state_consumer_ids"></a> [remote\_state\_consumer\_ids](#input\_remote\_state\_consumer\_ids) | (Optional) The set of workspace IDs set as explicit remote state consumers for the given workspace | `list(string)` | `[]` | no |
 | <a name="input_run_triggers"></a> [run\_triggers](#input\_run\_triggers) | List of source workspaces IDs that trigger runs in this workspace | `list(string)` | `[]` | no |
