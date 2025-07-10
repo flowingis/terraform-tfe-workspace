@@ -94,8 +94,8 @@ resource "tfe_workspace" "this" {
       identifier         = var.vcs_repository_identifier
       branch             = var.vcs_repository_branch
       ingress_submodules = var.vcs_repository_ingress_submodules
-      github_app_installation_id = try(var.github_app_installation_id)
-      oauth_token_id     = try(var.oauth_token_id)
+      github_app_installation_id = try(var.github_app_installation_id, null)
+      oauth_token_id     = try(var.oauth_token_id, null)
       tags_regex         = var.vcs_repository_tags_regex
     }
   }
