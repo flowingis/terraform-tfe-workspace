@@ -104,6 +104,7 @@ resource "tfe_workspace_settings" "this" {
   execution_mode                = var.execution_mode
   global_remote_state           = var.global_remote_state
   remote_state_consumer_ids     = var.remote_state_consumer_ids
+  agent_pool_id                 = var.execution_mode == "agent" ? var.agent_pool_id : null
 }
 resource "tfe_variable" "this" {
   for_each = local.all_variables

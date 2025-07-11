@@ -37,6 +37,12 @@ variable "execution_mode" {
   }
 }
 
+variable "agent_pool_id" {
+  description = "(Optional) The ID of an agent pool to assign to the workspace. Requires execution_mode to be set to agent. This value must not be provided if execution_mode is set to any other value."
+  type        = string
+  default     = null
+}
+
 variable "assessments_enabled" {
   description = "(Optional) Whether to regularly run health assessments such as drift detection on the workspace"
   type        = bool
