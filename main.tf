@@ -64,17 +64,15 @@ locals {
   )
 }
 
+
 resource "tfe_workspace" "this" {
   name                          = var.name
   organization                  = var.organization
   description                   = var.description
   allow_destroy_plan            = var.allow_destroy_plan
   auto_apply                    = var.auto_apply
-  execution_mode                = var.execution_mode
   assessments_enabled           = var.assessments_enabled
   file_triggers_enabled         = var.file_triggers_enabled
-  global_remote_state           = var.global_remote_state
-  remote_state_consumer_ids     = var.remote_state_consumer_ids
   project_id                    = var.project_id
   queue_all_runs                = var.queue_all_runs
   speculative_enabled           = var.speculative_enabled
@@ -101,6 +99,12 @@ resource "tfe_workspace" "this" {
   }
 }
 
+resource "tfe_workspace_settings" "this" {
+  workspace_id                  = tfe_workspace.this.id
+  execution_mode                = var.execution_mode
+  global_remote_state           = var.global_remote_state
+  remote_state_consumer_ids     = var.remote_state_consumer_ids
+}
 resource "tfe_variable" "this" {
   for_each = local.all_variables
 
