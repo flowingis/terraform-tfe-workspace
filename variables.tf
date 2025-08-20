@@ -37,6 +37,12 @@ variable "execution_mode" {
   }
 }
 
+variable "agent_pool_id" {
+  description = "(Optional) The ID of an agent pool to assign to the workspace. Requires execution_mode to be set to agent. This value must not be provided if execution_mode is set to any other value."
+  type        = string
+  default     = null
+}
+
 variable "assessments_enabled" {
   description = "(Optional) Whether to regularly run health assessments such as drift detection on the workspace"
   type        = bool
@@ -139,11 +145,16 @@ variable "vcs_repository_ingress_submodules" {
 }
 
 variable "oauth_token_id" {
-  description = "(Optional) The token ID of the VCS connection to use"
+  description = "(Optional) The token ID of the VCS connection to use. it conflicts with github_app_installation_id"
   type        = string
-  default     = ""
+  default    = null
 }
 
+variable "github_app_installation_id" {
+  description = "(Optional) The ID of Github App installation to use. it conflicts with oauth_token_id"
+  type        = string
+  default    = null
+}
 variable "vcs_repository_tags_regex" {
   description = "(Optional) (Optional) A regular expression used to trigger a Workspace run for matching Git tags. This option conflicts with trigger_patterns and trigger_prefixes. Should only set this value if the former is not being used"
   type        = string

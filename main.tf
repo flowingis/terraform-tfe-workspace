@@ -64,17 +64,15 @@ locals {
   )
 }
 
+
 resource "tfe_workspace" "this" {
   name                          = var.name
   organization                  = var.organization
   description                   = var.description
   allow_destroy_plan            = var.allow_destroy_plan
   auto_apply                    = var.auto_apply
-  execution_mode                = var.execution_mode
   assessments_enabled           = var.assessments_enabled
   file_triggers_enabled         = var.file_triggers_enabled
-  global_remote_state           = var.global_remote_state
-  remote_state_consumer_ids     = var.remote_state_consumer_ids
   project_id                    = var.project_id
   queue_all_runs                = var.queue_all_runs
   speculative_enabled           = var.speculative_enabled
@@ -88,18 +86,26 @@ resource "tfe_workspace" "this" {
   force_delete                  = var.force_delete
 
   dynamic "vcs_repo" {
-    for_each = length(var.vcs_repository_identifier) > 0 && length(var.oauth_token_id) > 0 ? [1] : []
+    for_each = (length(var.vcs_repository_identifier) > 0 && (length(var.oauth_token_id) > 0 )) || (length(var.vcs_repository_identifier) > 0 && length(var.github_app_installation_id) > 0 ) ? [1] : []
 
     content {
       identifier         = var.vcs_repository_identifier
       branch             = var.vcs_repository_branch
       ingress_submodules = var.vcs_repository_ingress_submodules
-      oauth_token_id     = var.oauth_token_id
+      github_app_installation_id = try(var.github_app_installation_id, null)
+      oauth_token_id     = try(var.oauth_token_id, null)
       tags_regex         = var.vcs_repository_tags_regex
     }
   }
 }
 
+resource "tfe_workspace_settings" "this" {
+  workspace_id                  = tfe_workspace.this.id
+  execution_mode                = var.execution_mode
+  global_remote_state           = var.global_remote_state
+  remote_state_consumer_ids     = var.remote_state_consumer_ids
+  agent_pool_id                 = var.execution_mode == "agent" ? var.agent_pool_id : null
+}
 resource "tfe_variable" "this" {
   for_each = local.all_variables
 
