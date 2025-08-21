@@ -21,7 +21,7 @@ Terraform module to provision and manage Terraform Cloud workspaces
 ```
 module "workspace_only_for_remote_state" {
   source  = "flowingis/workspace/tfe"
-  version = "0.5.0"
+  version = "0.6.0"
 
   name         = "my-workspace-name"
   organization = "my-organization"
@@ -54,7 +54,7 @@ module "workspace_only_for_remote_state" {
 ```
 module "my_workspace" {
   source  = "flowingis/workspace/tfe"
-  version = "0.5.0"
+  version = "0.6.0"
 
   name         = "my-workspace-name"
   organization = "my-organization"

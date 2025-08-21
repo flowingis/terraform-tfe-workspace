@@ -1,10 +1,10 @@
 terraform {
-  required_version = "~> 1.3.0"
+  required_version = ">= 1.3.0"
 
   required_providers {
     tfe = {
       source  = "hashicorp/tfe"
-      version = "~> 0.40.0"
+      version = "~> 0.67.0"
     }
   }
 }
@@ -30,9 +30,19 @@ module "advanced_workspace" {
   name              = "advanced-workspace"
   organization      = data.tfe_organization.myorg.name
   description       = "An advanced Terraform Cloud/Enterprise workspace"
-  terraform_version = "1.3.7"
+  terraform_version = "1.12.2"
 
   project_id = tfe_project.myproject.id
+
+  execution_mode            = "agent"
+  agent_pool_id             = "agent_pool_id_value"
+  
+  queue_all_runs            = false
+  working_directory         = "my_repo_folder/my_repo_subfolder"
+  vcs_repository_identifier = "repository_name_value"
+  vcs_repository_branch     = "repository_branch_value"
+  file_triggers_enabled      = false
+  oauth_token_id            = "oauth_token_id_value"
 
   terraform_variables = {
     string_variable = "stringvalue"

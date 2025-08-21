@@ -1,10 +1,10 @@
 terraform {
-  required_version = "~> 1.3.0"
+  required_version = ">= 1.3.0"
 
   required_providers {
     tfe = {
       source  = "hashicorp/tfe"
-      version = "~> 0.40.0"
+      version = "~> 0.67.0"
     }
   }
 }
@@ -19,7 +19,7 @@ module "simple_workspace" {
   name              = "simple-workspace"
   organization      = "myorg"
   description       = "A simple Terraform Cloud/Enterprise workspace"
-  terraform_version = "1.1.9"
+  terraform_version = "1.12.2"
 
   terraform_variables = {
     string_variable = "stringvalue"
